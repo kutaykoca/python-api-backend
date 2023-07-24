@@ -1,6 +1,7 @@
 import math
 import requests
 import environment
+from geopy.distance import geodesic
 
 def calculateDistance(lat1, lon1, lat2, lon2):
     R = 6371  # Dünya yarıçapı (kilometre cinsinden)
@@ -56,3 +57,30 @@ def createRotation(start_coordinate, end_coordinate):
         return route
     except:
         return False
+    
+
+def find_closest_coordiate(target, coordinates):
+    try:
+        min_distance = float('inf')
+        closest_coordiate = None
+
+        my_coordiate = (target.lat, target.lon)
+        
+        for coordinate in coordinates:
+            
+            target_coordinate = (coordinate.lat, coordinate.lon)
+            
+            distance = geodesic(my_coordiate, target_coordinate).meters
+            
+            if distance < min_distance:
+                min_distance = distance
+                closest_coordiate = coordinate
+            
+        return {
+            "name": closest_coordiate.name,
+            "lat": closest_coordiate.lat,
+            "lon": closest_coordiate.lon,
+            "distance": min_distance
+        }
+    except:
+        return None
